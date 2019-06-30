@@ -59,14 +59,14 @@
   <ItemGroup>
     <Reference Include="Opc.Ua.Client, Version=1.0.238.1, Culture=neutral, PublicKeyToken=22186a540fc0b044, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Opc.Ua.Client.dll</HintPath>
+      <HintPath>..\Lib\Opc.Ua.Client.dll</HintPath>
     </Reference>
     <Reference Include="Opc.Ua.Core, Version=1.0.238.1, Culture=neutral, PublicKeyToken=22186a540fc0b044, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Opc.Ua.Core.dll</HintPath>
+      <HintPath>..\Lib\Opc.Ua.Core.dll</HintPath>
     </Reference>
     <Reference Include="Siemens.OpcUA">
-      <HintPath>..\..\bin\Siemens.OpcUA.dll</HintPath>
+      <HintPath>..\Lib\Siemens.OpcUA.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
