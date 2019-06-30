@@ -476,7 +476,7 @@ namespace Siemens.OpcUA
             }
             else
             {
-                e.Accept = false;
+                e.Accept = true; //change false to true by hengde 2019.06.30
             }
         }
 
