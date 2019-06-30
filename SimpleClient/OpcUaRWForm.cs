@@ -18,6 +18,8 @@ namespace Siemens.OpcUA.SimpleClient
 
         private Server server = new Server();
 
+        private int connect = 0;
+
         #endregion
 
         public OpcUaRWForm()
@@ -28,10 +30,29 @@ namespace Siemens.OpcUA.SimpleClient
         private void btnConnect_Click(object sender, EventArgs e)
         {
             try { 
-                server.Connect(txtServerUrl.Text.Trim());
+                if(connect == 0) {
+                    server.Connect(txtServerUrl.Text.Trim());
+                }
+
+                if(connect == 1)
+                {
+                    int code =  server.Disconnect();
+                    txtServerUrl.ReadOnly = false;
+                    btnConnect.Text = "Connect";
+                    connect = 0;
+                }
+
+                if (server.Session.Connected)
+                {
+                    connect = 1;
+                    txtServerUrl.ReadOnly = true;
+                    MessageBox.Show("连接成功");
+                    btnConnect.Text = "Disconnect";
+                }
+                
             }catch(Exception ex)
             {
-                throw ex;
+                MessageBox.Show("连接失败");
             }
         }
 
@@ -49,30 +70,51 @@ namespace Siemens.OpcUA.SimpleClient
                    nic,
                    out valueC);
 
-            txtResult.Text = "write success:"+JsonConvert.SerializeObject(valueC);
+            txtReadValue.Text = valueC[0].Value.ToString();
+
+            txtResult.Text = "read success:"+valueC[0].Value.ToString();
         }
 
         private void btnWrite_Click(object sender, EventArgs e)
         {
             string nodeID = txtNodeID.Text.Trim();
             string writevalue = txtWriteValue.Text.Trim();
+            if (string.IsNullOrEmpty(nodeID))
+            {
+                MessageBox.Show("请输入NodeID");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(writevalue))
+            {
+                MessageBox.Show("请输入写入的值");
+                return;
+            }
+
             NodeIdCollection nic = new NodeIdCollection();
             NodeId nodeid = new NodeId(nodeID);
             nic.Add(nodeid);
 
-            DataValueCollection valueC = new DataValueCollection();
+            DataValueCollection valueC;
+            server.ReadValues(
+                   nic,
+                   out valueC);
 
-            DataValue dv = new DataValue();
-            dv.Value = txtWriteValue.Text.Trim();
+            Variant variant = new Variant(Convert.ChangeType(writevalue, valueC[0].Value.GetType()));
 
-            valueC.Add(dv);
+
+            DataValueCollection values = new DataValueCollection();
+            DataValue value = new DataValue(variant);
+            values.Add(value);
 
             StatusCodeCollection results = null;
 
             server.WriteValues(
                    nic,
-                   valueC,
+                   values,
                    out results);
+
+            txtReadValue.Text = writevalue;
 
             txtResult.Text = "write success";
         }
